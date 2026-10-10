@@ -1,29 +1,68 @@
+import { renderIcon } from "../lib/icons";
+
+const toBengaliNumber = (num: string | number) => {
+  if (num === undefined || num === null) return "";
+  const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+  return num.toString().replace(/[0-9]/g, (w) => bengaliDigits[+w as any]);
+};
+
+const translateUnit = (unit: string) => {
+  if (!unit) return "";
+  const map: Record<string, string> = {
+    "kg": "কেজি",
+    "litre": "লিটার",
+    "dozen": "ডজন",
+    "piece": "পিস",
+    "gm": "গ্রাম",
+  };
+  return map[unit.toLowerCase()] || unit;
+};
+
 export default async function Ticker() {
+  let products = [];
   try {
     const res = await fetch("https://api.api-store.workers.dev/api/bazardor/products", {
-      cache: "no-store",
+      cache: "no-store"
     });
-    const products = await res.json();
-    const tickerItems = products.slice(0, 15);
-
-    return (
-      <div className="w-full bg-white border-t border-gray-100 py-2 overflow-hidden flex">
-        <div className="animate-marquee whitespace-nowrap flex gap-8 px-4 w-max">
-          {tickerItems.map((item: any, i: number) => (
-            <span key={i} className="text-sm text-gray-700 flex items-center gap-2">
-              <span className={item.change.dir === "up" ? "text-red-500" : item.change.dir === "down" ? "text-green-500" : "text-gray-500"}>
-                {item.change.dir === "up" ? "▲" : item.change.dir === "down" ? "▼" : "—"}
-              </span>
-              {item.name} {item.today} টাকা/{item.unit}{" "}
-              <span className={item.change.dir === "up" ? "text-red-500" : item.change.dir === "down" ? "text-green-500" : "text-gray-500"}>
-                {item.change.pct}%
-              </span>
-            </span>
-          ))}
-        </div>
-      </div>
-    );
+    if (res.ok) {
+      products = await res.json();
+    }
   } catch (error) {
-    return null;
+    console.error("Failed to fetch ticker data", error);
   }
+
+  if (!products.length) return null;
+
+  return (
+    <div className="w-full bg-[#f8faf8] border-b border-gray-100 overflow-hidden py-2.5">
+      {/* We duplicate the array to create a seamless infinite marquee effect */}
+      <div className="flex whitespace-nowrap animate-[marquee_30s_linear_infinite]">
+        {[...products, ...products].map((item: any, index: number) => {
+          const isUp = item.change?.dir === "up";
+          const isDown = item.change?.dir === "down";
+
+          return (
+            <div key={`${item.id}-${index}`} className="flex items-center gap-2.5 px-5 border-r border-gray-200 last:border-none">
+              <span className="flex items-center justify-center shrink-0 opacity-80">
+                {renderIcon(item.image, "w-[16px] h-[16px]")}
+              </span>
+              
+              <span className="text-[14px] font-semibold text-[#374151]">
+                {item.nameBn}
+              </span>
+              
+              <span className="text-[14px] font-medium text-[#6b7280]">
+                {toBengaliNumber(item.today)} টাকা/{translateUnit(item.unit)}
+              </span>
+              
+              <div className={`flex items-center gap-1 text-[13px] font-bold ${isUp ? 'text-[#E02424]' : isDown ? 'text-[#057A55]' : 'text-gray-400'}`}>
+                <span className="text-[10px]">{isUp ? '▲' : isDown ? '▼' : '—'}</span>
+                <span>{toBengaliNumber(item.change?.pct || 0)}%</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
