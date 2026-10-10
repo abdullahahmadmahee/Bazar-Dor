@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { renderIcon } from "@/lib/icons";
 
+export const dynamic = "force-dynamic";
+
 const toBengaliNumber = (num: string | number) => {
   if (num === undefined || num === null) return "";
   const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
@@ -38,7 +40,6 @@ export default async function ProductDetailsPage({
   const product = await res.json();
   const isUp = product.change?.dir === "up";
   const isDown = product.change?.dir === "down";
-
   const marketData = product.markets || [];
 
   return (
