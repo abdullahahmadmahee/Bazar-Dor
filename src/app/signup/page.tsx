@@ -18,7 +18,7 @@ export default function SignUpPage() {
     e.preventDefault();
     setError("");
 
-    if (!name || !email || !password) {
+    if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
       setError("সবগুলো ঘর পূরণ করুন।");
       return;
     }
@@ -32,17 +32,26 @@ export default function SignUpPage() {
     }
 
     setLoading(true);
-    const { data, error: authError } = await authClient.signUp.email({
-      email,
-      password,
-      name,
-    });
 
-    setLoading(false);
-    if (authError) {
-      setError(authError.message || "অ্যাকাউন্ট তৈরি করতে সমস্যা হয়েছে।");
-    } else {
-      router.push("/");
+    try {
+      const { data, error: authError } = await authClient.signUp.email({
+        email: email.trim(),
+        password: password,
+        name: name.trim(),
+      });
+
+      if (authError) {
+        console.log("BetterAuth signUp error:", authError); 
+        setError(authError.message || "অ্যাকাউন্ট তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      } else {
+        router.push("/");
+        router.refresh();
+      }
+    } catch (err: any) {
+      console.error("SignUp network/crash error:", err);
+      setError("সার্ভার বা ডেটাবেজ সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,12 +64,12 @@ export default function SignUpPage() {
       
       <div className="text-center mb-6">
         <h1 className="text-[26px] font-bold text-[#1f2937] mb-2 tracking-tight">অ্যাকাউন্ট তৈরি করুন</h1>
-        <p className="text-[13px] text-gray-500 font-medium">বিনা খরচে সাইন আপ করে সব বিস্তারিত দাম দেখুন।</p>
+        <p className="text-[13px] text-gray-505 font-medium">বিনা খরচে সাইন আপ করে সব বিস্তারিত দাম দেখুন।</p>
       </div>
 
       <div className="w-full max-w-[420px] bg-white rounded-[16px] shadow-sm border border-gray-100 p-8">
         {error && (
-          <div className="mb-5 p-3 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm font-medium text-center">
+          <div className="mb-5 p-3 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm font-medium text-center leading-normal">
             {error}
           </div>
         )}
@@ -113,7 +122,7 @@ export default function SignUpPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#057A55] text-white mt-3 py-3 px-4 rounded-lg text-[14px] font-semibold hover:bg-[#046c4e] transition-all focus:outline-none shadow-[0_4px_12px_rgba(5,122,85,0.2)]"
+            className="w-full bg-[#057A55] text-white mt-3 py-3 px-4 rounded-lg text-[14px] font-semibold hover:bg-[#046c4e] transition-all focus:outline-none shadow-[0_4px_12px_rgba(5,122,85,0.2)] disabled:bg-gray-400 disabled:shadow-none"
           >
             {loading ? "অপেক্ষা করুন..." : "অ্যাকাউন্ট তৈরি করুন"}
           </button>
@@ -121,7 +130,7 @@ export default function SignUpPage() {
 
         <div className="relative my-6 text-center">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-          <span className="relative bg-white px-3 text-[12px] text-gray-500 font-medium">অথবা</span>
+          <span className="relative bg-white px-3 text-[12px] text-gray-500 font-medium animate-pulse">অথবা</span>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-6">

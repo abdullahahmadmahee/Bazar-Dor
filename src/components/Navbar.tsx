@@ -5,10 +5,13 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import { renderIcon } from "../lib/icons";
+import { authClient } from "@/lib/auth-client";
 
 function NavbarContent() {
   const pathname = usePathname();
   const [dateStr, setDateStr] = useState("");
+  
+  const { data: session, isPending } = authClient.useSession();
 
   useEffect(() => {
     const formatter = new Intl.DateTimeFormat("bn-BD", {
@@ -27,9 +30,14 @@ function NavbarContent() {
     { name: "সবজি", emoji: "🥬", slug: "sobji" },
     { name: "মাছ", emoji: "🐟", slug: "mach" },
     { name: "মাংস", emoji: "🍗", slug: "mangsho" },
-    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dui" }, 
-    { name: "মসলা", emoji: "🌶️", slug: "mosla" },   
+    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dudh" }, 
+    { name: "মসলা", emoji: "🌶️", slug: "moshla" },   
   ];
+
+  const handleLogout = async () => {
+    await authClient.signOut();
+    window.location.href = "/";
+  };
 
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -52,13 +60,36 @@ function NavbarContent() {
             </div>
           </Link>
 
-          <div className="flex gap-3">
-            <Link href="/signin" className="btn btn-sm btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-normal">
-              সাইন ইন
-            </Link>
-            <Link href="/signup" className="btn btn-sm bg-[#057A55] text-white hover:bg-[#046c4e] border-none font-normal">
-              সাইন আপ
-            </Link>
+          <div className="flex gap-3 items-center">
+            {isPending ? (
+              <div className="w-32 h-8 bg-gray-100 animate-pulse rounded-lg"></div>
+            ) : session ? (
+              <>
+                <Link href="/profile" className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-lg transition-colors border border-transparent hover:border-gray-200">
+                  <div className="w-8 h-8 bg-[#E8F5E9] text-[#057A55] border border-[#A5D6A7] rounded-full flex items-center justify-center text-[14px] font-bold">
+                    {session.user.name?.charAt(0).toUpperCase() || "👤"}
+                  </div>
+                  <span className="text-[14px] font-bold text-gray-700 hidden sm:block">
+                    {session.user.name?.split(" ")[0]}
+                  </span>
+                </Link>
+                <button 
+                  onClick={handleLogout}
+                  className="btn btn-sm btn-outline border-gray-300 text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600 font-medium"
+                >
+                  লগআউট
+                </button>
+              </>
+            ) : (
+              <>
+                <Link href="/signin" className="btn btn-sm btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-normal">
+                  সাইন ইন
+                </Link>
+                <Link href="/signup" className="btn btn-sm bg-[#057A55] text-white hover:bg-[#046c4e] border-none font-normal">
+                  সাইন আপ
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
