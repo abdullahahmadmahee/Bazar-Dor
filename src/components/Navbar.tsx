@@ -30,8 +30,8 @@ function NavbarContent() {
     { name: "সবজি", emoji: "🥬", slug: "sobji" },
     { name: "মাছ", emoji: "🐟", slug: "mach" },
     { name: "মাংস", emoji: "🍗", slug: "mangsho" },
-    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dudh" }, 
-    { name: "মসলা", emoji: "🌶️", slug: "moshla" },   
+    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dui" }, 
+    { name: "মসলা", emoji: "🌶️", slug: "mosla" },   
   ];
 
   const handleLogout = async () => {
