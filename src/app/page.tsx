@@ -1,5 +1,6 @@
 import Hero from "@/components/Hero";
 import ProductCard from "@/components/ProductCard";
+export const dynamic = "force-dynamic";
 
 const toBengaliNumber = (num: string | number) => {
   if (num === undefined || num === null) return "";
