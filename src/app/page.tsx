@@ -9,17 +9,15 @@ const toBengaliNumber = (num: string | number) => {
 
 export default async function Home() {
   const res = await fetch("https://api.api-store.workers.dev/api/bazardor/products", {
-    cache: "no-store"
+    cache: "force-cache"
   });
   const products = await res.json();
 
-  // Get top 6 price increases
   const risers = [...products]
     .filter((p: any) => p.change?.dir === "up")
     .sort((a: any, b: any) => parseFloat(b.change?.pct) - parseFloat(a.change?.pct))
     .slice(0, 6);
 
-  // Get top 6 price decreases
   const fallers = [...products]
     .filter((p: any) => p.change?.dir === "down")
     .sort((a: any, b: any) => parseFloat(b.change?.pct) - parseFloat(a.change?.pct))
@@ -29,7 +27,6 @@ export default async function Home() {
     <div className="space-y-16">
       <Hero />
 
-      {/* Risers Section */}
       <section>
         <h2 className="text-[20px] font-bold text-gray-900 mb-6 flex items-center gap-2">
           <span className="text-[#E02424] text-[18px]">▲</span> আজ দাম বেড়েছে
@@ -41,7 +38,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Fallers Section */}
       <section>
         <h2 className="text-[20px] font-bold text-gray-900 mb-6 flex items-center gap-2">
           <span className="text-[#057A55] text-[18px]">▼</span> আজ দাম কমেছে
@@ -53,7 +49,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* All Products Section */}
       <section id="সব-পণ্য" className="scroll-mt-32">
         <div className="mb-6">
           <h2 className="text-[20px] font-bold text-gray-900 mb-1">সব পণ্য</h2>

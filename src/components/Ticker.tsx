@@ -22,7 +22,7 @@ export default async function Ticker() {
   let products = [];
   try {
     const res = await fetch("https://api.api-store.workers.dev/api/bazardor/products", {
-      cache: "no-store"
+      cache: "force-cache"
     });
     if (res.ok) {
       products = await res.json();
@@ -35,7 +35,6 @@ export default async function Ticker() {
 
   return (
     <div className="w-full bg-[#f8faf8] border-b border-gray-100 overflow-hidden py-2.5">
-      {/* We duplicate the array to create a seamless infinite marquee effect */}
       <div className="flex whitespace-nowrap animate-[marquee_30s_linear_infinite]">
         {[...products, ...products].map((item: any, index: number) => {
           const isUp = item.change?.dir === "up";

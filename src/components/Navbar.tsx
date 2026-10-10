@@ -3,10 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { renderIcon } from "../lib/icons";
 
-export default function Navbar() {
+function NavbarContent() {
   const pathname = usePathname();
   const [dateStr, setDateStr] = useState("");
 
@@ -27,8 +27,8 @@ export default function Navbar() {
     { name: "সবজি", emoji: "🥬", slug: "sobji" },
     { name: "মাছ", emoji: "🐟", slug: "mach" },
     { name: "মাংস", emoji: "🍗", slug: "mangsho" },
-    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dudh" },
-    { name: "মসলা", emoji: "🌶️", slug: "moshla" },
+    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dui" }, 
+    { name: "মসলা", emoji: "🌶️", slug: "mosla" },   
   ];
 
   return (
@@ -85,5 +85,13 @@ export default function Navbar() {
         </div>
       </div>
     </header>
+  );
+}
+
+export default function Navbar() {
+  return (
+    <Suspense fallback={<div className="h-[120px] bg-white w-full border-b border-gray-100"></div>}>
+      <NavbarContent />
+    </Suspense>
   );
 }
