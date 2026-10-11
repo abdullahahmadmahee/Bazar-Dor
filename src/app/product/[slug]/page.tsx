@@ -4,6 +4,7 @@ import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { renderIcon } from "@/lib/icons";
 
 const toBengaliNumber = (num: number | string) => {
   const engToBng: { [key: string]: string } = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯', '.': '.' };
@@ -84,8 +85,9 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
         <div className="bg-white rounded-2xl shadow-[0_2px_8px_rgba(0,0,0,0.02)] p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-6">
           <div className="flex items-center gap-5">
             <div className="w-[60px] h-[60px] bg-[#F4F7F4] rounded-full flex items-center justify-center text-3xl">
-              {product.image}
-            </div>
+            {renderIcon(product.image, "w-10 h-10")} 
+        </div>
+        
             <div>
               <h1 className="text-[22px] font-bold text-gray-900 mb-1">{product.nameBn}</h1>
               <p className="text-[13px] text-gray-500 mb-2">প্রতি {unitBn} - {product.categoryNameBn}</p>
