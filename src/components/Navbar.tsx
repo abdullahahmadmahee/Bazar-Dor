@@ -3,13 +3,16 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useRef } from "react";
 import { renderIcon } from "../lib/icons";
 import { authClient } from "@/lib/auth-client";
 
 function NavbarContent() {
   const pathname = usePathname();
   const [dateStr, setDateStr] = useState("");
+  
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   const { data: session, isPending } = authClient.useSession();
 
@@ -23,6 +26,16 @@ function NavbarContent() {
     setDateStr(formatter.format(new Date()));
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const categories = [
     { name: "চাল", emoji: "🍚", slug: "chal" },
     { name: "ডাল", emoji: "🫘", slug: "dal" },
@@ -30,7 +43,7 @@ function NavbarContent() {
     { name: "সবজি", emoji: "🥬", slug: "sobji" },
     { name: "মাছ", emoji: "🐟", slug: "mach" },
     { name: "মাংস", emoji: "🍗", slug: "mangsho" },
-    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dui" }, 
+    { name: "ডিম-দুধ", emoji: "🥛", slug: "dim-dudh" }, 
     { name: "মসলা", emoji: "🌶️", slug: "mosla" },   
   ];
 
@@ -64,22 +77,63 @@ function NavbarContent() {
             {isPending ? (
               <div className="w-32 h-8 bg-gray-100 animate-pulse rounded-lg"></div>
             ) : session ? (
-              <>
-                <Link href="/profile" className="flex items-center gap-2 hover:bg-gray-50 px-2 py-1.5 rounded-lg transition-colors border border-transparent hover:border-gray-200">
-                  <div className="w-8 h-8 bg-[#E8F5E9] text-[#057A55] border border-[#A5D6A7] rounded-full flex items-center justify-center text-[14px] font-bold">
-                    {session.user.name?.charAt(0).toUpperCase() || "👤"}
+              
+              <div className="relative" ref={dropdownRef}>
+                <button 
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  className="flex items-center gap-2 hover:bg-gray-50 p-1.5 pr-3 rounded-full transition-colors border border-transparent hover:border-gray-200"
+                >
+                  <div className="w-8 h-8 bg-[#E8F3EF] text-[#057A55] rounded-full flex items-center justify-center font-bold text-sm">
+                    {session.user.name?.charAt(0).toUpperCase() || "U"}
                   </div>
-                  <span className="text-[14px] font-bold text-gray-700 hidden sm:block">
+                  <span className="font-medium text-gray-700 text-[15px] hidden sm:block">
                     {session.user.name?.split(" ")[0]}
                   </span>
-                </Link>
-                <button 
-                  onClick={handleLogout}
-                  className="btn btn-sm btn-outline border-gray-300 text-gray-600 hover:bg-red-50 hover:border-red-200 hover:text-red-600 font-medium"
-                >
-                  লগআউট
+                  <svg 
+                    className={`w-3.5 h-3.5 text-gray-500 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
                 </button>
-              </>
+
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-3 w-[260px] bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 p-5 z-50">
+                    <div className="mb-4">
+                      <h3 className="text-[16px] font-bold text-gray-900 leading-snug">
+                        {session.user.name}
+                      </h3>
+                      <p className="text-[13px] text-gray-500 mt-0.5">
+                        {session.user.email}
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <Link 
+                        href="/profile" 
+                        onClick={() => setIsDropdownOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-gray-700 hover:bg-[#F4F7F4] rounded-xl transition-colors"
+                      >
+                        <svg className="w-[18px] h-[18px] text-[#4B5563]" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                        </svg>
+                        আমার প্রোফাইল
+                      </Link>
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 text-[15px] font-medium text-[#E02424] hover:bg-red-50 rounded-xl transition-colors"
+                      >
+                        <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        সাইন আউট
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
             ) : (
               <>
                 <Link href="/signin" className="btn btn-sm btn-outline border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 font-normal">
