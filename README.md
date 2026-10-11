@@ -3,7 +3,7 @@
 A full-stack grocery price tracking web application built to monitor daily market prices across various divisions in Bangladesh.
 
 ## 🚀 Live Demo
-[Insert Your Vercel Live Link Here]
+(https://bazar-dor-ochre.vercel.app)
 
 ## 🛠 Tech Stack
 * Frontend: Next.js 15 (App Router), React, Tailwind CSS
