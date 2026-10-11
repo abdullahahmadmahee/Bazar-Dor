@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -12,8 +13,9 @@ export default function ProfilePage() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
 
-  useEffect(() => {
+useEffect(() => {
     if (!isPending && !session) {
+      toast.error("প্রোফাইল দেখতে লগইন করুন।"); 
       router.push("/signin");
     } else if (session?.user?.name) {
       setName(session.user.name);
@@ -23,17 +25,16 @@ export default function ProfilePage() {
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsUpdating(true);
-    setMessage({ type: "", text: "" });
 
     try {
       const { data, error } = await authClient.updateUser({ name });
       if (error) {
-        setMessage({ type: "error", text: error.message || "আপডেট করতে সমস্যা হয়েছে।" });
+        toast.error(error.message || "আপডেট করতে সমস্যা হয়েছে।"); 
       } else {
-        setMessage({ type: "success", text: "প্রোফাইল সফলভাবে আপডেট হয়েছে!" });
+        toast.success("প্রোফাইল সফলভাবে আপডেট হয়েছে!"); 
       }
     } catch (err) {
-      setMessage({ type: "error", text: "একটি ত্রুটি ঘটেছে।" });
+      toast.error("একটি ত্রুটি ঘটেছে।"); 
     } finally {
       setIsUpdating(false);
     }
@@ -65,7 +66,6 @@ export default function ProfilePage() {
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
           <div className="flex items-center gap-4 w-full sm:w-auto">
-            {/* Placeholder Avatar */}
             <div className="w-14 h-14 bg-[#E8F3EF] text-[#057A55] rounded-full flex items-center justify-center text-2xl font-bold">
               {session.user.name?.charAt(0).toUpperCase() || "U"}
             </div>

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Ticker from "@/components/Ticker";
 import { Suspense } from "react";
+import { Toaster } from "react-hot-toast";
 
 const notoSansBengali = Noto_Sans_Bengali({ subsets: ["bengali"], weight: ["400", "500", "600", "700"] });
 
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="bn" data-theme="light">
       <body className={`${notoSansBengali.className} min-h-screen flex flex-col text-gray-900`}>
+        <Toaster position="top-center" reverseOrder={false} />
         <Navbar />
         <Suspense fallback={<div className="h-[41px] w-full bg-white border-t border-gray-100"></div>}>
           <Ticker />

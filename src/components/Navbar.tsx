@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState, Suspense, useRef } from "react";
 import { renderIcon } from "../lib/icons";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 function NavbarContent() {
   const pathname = usePathname();
@@ -49,6 +50,7 @@ function NavbarContent() {
 
   const handleLogout = async () => {
     await authClient.signOut();
+    toast.success("সফলভাবে লগআউট হয়েছে!"); 
     window.location.href = "/";
   };
 

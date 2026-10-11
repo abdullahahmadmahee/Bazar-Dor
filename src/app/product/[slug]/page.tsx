@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { renderIcon } from "@/lib/icons";
+import toast from "react-hot-toast";
 
 const toBengaliNumber = (num: number | string) => {
   const engToBng: { [key: string]: string } = { '0': '০', '1': '১', '2': '২', '3': '৩', '4': '৪', '5': '৫', '6': '৬', '7': '৭', '8': '৮', '9': '৯', '.': '.' };
@@ -19,8 +20,9 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
   
   const { data: session, isPending: isAuthPending } = authClient.useSession();
 
-  useEffect(() => {
+ useEffect(() => {
     if (!isAuthPending && !session) {
+      toast.error("বিস্তারিত দেখতে অনুগ্রহ করে লগইন করুন।"); 
       router.push("/signin");
     }
   }, [session, isAuthPending, router]);
@@ -87,7 +89,7 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
             <div className="w-[60px] h-[60px] bg-[#F4F7F4] rounded-full flex items-center justify-center text-3xl">
             {renderIcon(product.image, "w-10 h-10")} 
         </div>
-        
+
             <div>
               <h1 className="text-[22px] font-bold text-gray-900 mb-1">{product.nameBn}</h1>
               <p className="text-[13px] text-gray-500 mb-2">প্রতি {unitBn} - {product.categoryNameBn}</p>
