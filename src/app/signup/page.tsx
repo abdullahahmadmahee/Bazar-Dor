@@ -34,22 +34,20 @@ export default function SignUpPage() {
     setLoading(true);
 
     try {
-      const { data, error: authError } = await authClient.signUp.email({
+      const { error: authError } = await authClient.signUp.email({
         email: email.trim(),
         password: password,
         name: name.trim(),
       });
 
       if (authError) {
-        console.log("BetterAuth signUp error:", authError); 
-        setError(authError.message || "অ্যাকাউন্ট তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+        setError(authError.message || "অ্যাকাউন্ট তৈরি করতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
       } else {
         router.push("/");
         router.refresh();
       }
     } catch (err: any) {
-      console.error("SignUp network/crash error:", err);
-      setError("সার্ভার বা ডেটাবেজ সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+      setError("সার্ভার বা ডেটাবেজ সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
     } finally {
       setLoading(false);
     }
@@ -64,10 +62,10 @@ export default function SignUpPage() {
       
       <div className="text-center mb-6">
         <h1 className="text-[26px] font-bold text-[#1f2937] mb-2 tracking-tight">অ্যাকাউন্ট তৈরি করুন</h1>
-        <p className="text-[13px] text-gray-505 font-medium">বিনা খরচে সাইন আপ করে সব বিস্তারিত দাম দেখুন।</p>
+        <p className="text-[13px] text-gray-500 font-medium">বিনা খরচে সাইন আপ করে সব বিস্তারিত দাম দেখুন।</p>
       </div>
 
-      <div className="w-full max-w-[420px] bg-white rounded-[16px] shadow-sm border border-gray-100 p-8">
+      <div className="w-full max-w-[460px] bg-white rounded-[16px] shadow-sm border border-gray-100 p-8">
         {error && (
           <div className="mb-5 p-3 bg-red-50 border border-red-100 text-red-600 rounded-lg text-sm font-medium text-center leading-normal">
             {error}
@@ -98,7 +96,7 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label className="block text-[13px] font-bold text-gray-800 mb-1.5">পাসওয়ার্ড</label>
+            <label className="block text-[13px] font-bold text-gray-800 mb-1.5">পাসওয়ার্ড</label>
             <input
               type="password"
               placeholder="কমপক্ষে ৮ অক্ষর"
@@ -109,7 +107,7 @@ export default function SignUpPage() {
           </div>
 
           <div>
-            <label className="block text-[13px] font-bold text-gray-800 mb-1.5">পাসওয়ার্ড নিশ্চিত করুন</label>
+            <label className="block text-[13px] font-bold text-gray-800 mb-1.5">পাসওয়ার্ড নিশ্চিত করুন</label>
             <input
               type="password"
               placeholder="আবার লিখুন"
@@ -130,22 +128,22 @@ export default function SignUpPage() {
 
         <div className="relative my-6 text-center">
           <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-          <span className="relative bg-white px-3 text-[12px] text-gray-500 font-medium animate-pulse">অথবা</span>
+          <span className="relative bg-white px-3 text-[14px] text-gray-600 font-medium">অথবা</span>
         </div>
 
         <div className="grid grid-cols-2 gap-3 mb-6">
-          <button onClick={() => handleOAuth("google")} className="flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg text-[12px] font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-3.5 h-3.5" alt="" />
-            Google দিয়ে চালিয়ে যান
+          <button onClick={() => handleOAuth("google")} type="button" className="flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg text-[13px] font-semibold text-gray-800 hover:bg-gray-50 transition-colors">
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-4 h-4" alt="Google" />
+            Google দিয়ে চালিয়ে যান
           </button>
-          <button onClick={() => handleOAuth("github")} className="flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg text-[12px] font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-            <img src="https://www.svgrepo.com/show/512317/github-142.svg" className="w-3.5 h-3.5" alt="" />
-            GitHub দিয়ে চালিয়ে যান
+          <button onClick={() => handleOAuth("github")} type="button" className="flex items-center justify-center gap-2 py-2.5 border border-gray-200 rounded-lg text-[13px] font-semibold text-gray-800 hover:bg-gray-50 transition-colors">
+            <img src="https://www.svgrepo.com/show/512317/github-142.svg" className="w-4 h-4" alt="GitHub" />
+            GitHub দিয়ে চালিয়ে যান
           </button>
         </div>
 
-        <p className="text-center text-[13px] text-gray-600 font-medium">
-          অ্যাকাউন্ট আছে? <Link href="/signin" className="text-[#057A55] font-bold hover:underline">সাইন ইন করুন</Link>
+        <p className="text-center text-[14px] text-gray-700 font-medium">
+          অ্যাকাউন্ট আছে? <Link href="/signin" className="text-[#057A55] font-semibold hover:underline">সাইন ইন করুন</Link>
         </p>
       </div>
 
