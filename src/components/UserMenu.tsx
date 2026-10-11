@@ -56,7 +56,6 @@ export default function UserMenu() {
       {isOpen && (
         <div className="absolute right-0 mt-3 w-[260px] bg-white rounded-[20px] shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 p-5 z-50">
           
-          {/* User Info Header */}
           <div className="mb-4">
             <h3 className="text-[16px] font-bold text-gray-900 leading-snug">
               {session.user.name}
